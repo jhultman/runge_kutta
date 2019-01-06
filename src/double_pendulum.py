@@ -23,7 +23,7 @@ class DoublePendulum:
     def u_prime(self, q, r, u, v, t):
         m1, m2, l1, l2, g = self.m1, self.m2, self.l1, self.l2, self.g
         
-        num =             2 * g * m1 * np.sin(q) +             g * m2 * np.sin(q) +             g * m2 * np.sin(q - 2 * r) +             l1 * m2 * u ** 2 * np.sin(2 * (q - r)) +             2 * l2 * m2 * v ** 2 * np.sin(q - r)
+        num = 2 * g * m1 * np.sin(q) + g * m2 * np.sin(q) + g * m2 * np.sin(q - 2 * r) + l1 * m2 * u ** 2 * np.sin(2 * (q - r)) + 2 * l2 * m2 * v ** 2 * np.sin(q - r)
 
         den = -2 * l1 * (m1 - m2 * np.cos(q - r) ** 2 + m2)
         val = num / den
@@ -32,7 +32,7 @@ class DoublePendulum:
     def v_prime(self, q, r, u, v, t):
         m1, m2, l1, l2, g = self.m1, self.m2, self.l1, self.l2, self.g
         
-        num =             -(m1 + m2) * (g * np.sin(r) - l1 * u ** 2 * np.sin(q - r)) +             (np.cos(q - r)) *                 (g * m1 * np.sin(q) +                  g * m2 * np.sin(q) +                  l2 * m2 * v ** 2 * np.sin(q - r))
+        num = -(m1 + m2) * (g * np.sin(r) - l1 * u ** 2 * np.sin(q - r)) + (np.cos(q - r)) * (g * m1 * np.sin(q) + g * m2 * np.sin(q) + l2 * m2 * v ** 2 * np.sin(q - r))
 
         den = l2 * (m1 - m2 * np.cos(q - r) ** 2 + m2)
         val = num / den
@@ -142,7 +142,6 @@ class Animator:
         self.ax.set_ylim(limits[1, :])
         self.ax.set_aspect('equal')
         self.ax.set_axis_off()
-
 
     def _init_ani(self):
         self._configure_axes()
