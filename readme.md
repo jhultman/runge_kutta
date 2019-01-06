@@ -16,6 +16,7 @@ of first order differential equations in four variables which
 is ripe for presentation to our Runge-Kutta solver.
 
 
+```text
  ⎛                                                                                                        2                                        ⎞ 
  ⎜                                                                                             ⎛d        ⎞                                         ⎟ 
  ⎜                                                                l₁⋅m₂⋅sin(2⋅θ₁(t) - 2⋅θ₂(t))⋅⎜──(θ₁(t))⎟                                        2⎟ 
@@ -34,3 +35,4 @@ is ripe for presentation to our Runge-Kutta solver.
 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
                                                                 ⎛           2                    ⎞                                                              
                                                              l₂⋅⎝m₁ - m₂⋅cos (θ₁(t) - θ₂(t)) + m₂⎠                                                              
+```
