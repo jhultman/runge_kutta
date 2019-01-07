@@ -1,4 +1,6 @@
+import tqdm
 import numpy as np
+from numpy import sin, cos
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
@@ -22,19 +24,17 @@ class DoublePendulum:
 
     def u_prime(self, q, r, u, v, t):
         m1, m2, l1, l2, g = self.m1, self.m2, self.l1, self.l2, self.g
-        
-        num = 2 * g * m1 * np.sin(q) + g * m2 * np.sin(q) + g * m2 * np.sin(q - 2 * r) + l1 * m2 * u ** 2 * np.sin(2 * (q - r)) + 2 * l2 * m2 * v ** 2 * np.sin(q - r)
-
-        den = -2 * l1 * (m1 - m2 * np.cos(q - r) ** 2 + m2)
+        num = 2 * g * m1 * sin(q) + g * m2 * sin(q) + g * m2 * sin(q - 2 * r)
+        num += l1 * m2 * u ** 2 * sin(2 * (q - r)) + 2 * l2 * m2 * v ** 2 * sin(q - r)
+        den = -2 * l1 * (m1 - m2 * cos(q - r) ** 2 + m2)
         val = num / den
         return val
 
     def v_prime(self, q, r, u, v, t):
         m1, m2, l1, l2, g = self.m1, self.m2, self.l1, self.l2, self.g
-        
-        num = -(m1 + m2) * (g * np.sin(r) - l1 * u ** 2 * np.sin(q - r)) + (np.cos(q - r)) * (g * m1 * np.sin(q) + g * m2 * np.sin(q) + l2 * m2 * v ** 2 * np.sin(q - r))
-
-        den = l2 * (m1 - m2 * np.cos(q - r) ** 2 + m2)
+        num = -(m1 + m2) * (g * sin(r) - l1 * u ** 2 * sin(q - r))
+        num += (cos(q - r)) * (g * m1 * sin(q) + g * m2 * sin(q) + l2 * m2 * v ** 2 * sin(q - r))
+        den = l2 * (m1 - m2 * cos(q - r) ** 2 + m2)
         val = num / den
         return val
     
@@ -49,19 +49,19 @@ class DoublePendulum:
         return qruv_prime
 
     def x1(self, q, r):
-        val = +self.l1 * np.sin(q)
+        val = +self.l1 * sin(q)
         return val
 
     def y1(self, q, r):
-        val = -self.l1 * np.cos(q)
+        val = -self.l1 * cos(q)
         return val
 
     def x2(self, q, r):
-        val = self.x1(q, r) + self.l2 * np.sin(r)
+        val = self.x1(q, r) + self.l2 * sin(r)
         return val
 
     def y2(self, q, r):
-        val = self.y1(q, r) - self.l2 * np.cos(r)
+        val = self.y1(q, r) - self.l2 * cos(r)
         return val
     
     def positions(self, q, r):
@@ -95,7 +95,8 @@ class RungeKuttaSimulator:
         h = self.h
         f = self.pendulum.derivatives
         
-        for ti in self.t:
+        print('Simulating...')
+        for ti in tqdm.tqdm(self.t):
             history += [self._get_state(qruvti)]
             k1 = h * f(*qruvti)
 
@@ -160,14 +161,15 @@ class Animator:
     
     def animate(self):
         num_points = len(self.state)
-        frames = num_points // self.incr
+        frames = tqdm.trange(num_points // self.incr)
         savepath = self._get_savepath()
 
+        print('Animating...')
         ani = FuncAnimation(
             fig=self.fig, 
             func=self._step, 
             init_func=self._init_ani,
-            frames=frames, 
+            frames=frames,
             interval=50, 
             repeat=False, 
             blit=True,
@@ -177,11 +179,11 @@ class Animator:
         
 
 def main():
-    q0 = np.deg2rad(180 + 1e-3)
-    r0 = np.deg2rad(180 - 1e-3)
+    q0 = np.deg2rad(180.0)
+    r0 = np.deg2rad(180.0)
 
     pendulum = DoublePendulum()
-    simulator = RungeKuttaSimulator(pendulum, q0=q0, r0=r0)
+    simulator = RungeKuttaSimulator(pendulum, q0=q0, r0=r0, T=25)
     history = simulator.simulate()
 
     title = 'Double Pendulum'

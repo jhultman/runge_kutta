@@ -4,9 +4,13 @@ Here we implement a Runge-Kutta method for solving a
 two-variable second-order differential equation
 and use it to demonstrate chaotic motion in the plane.
 
-
 ![Double-pendulum](/images/double_pendulum.gif)
 
+Edit: If we choose the initial angles to be vertical
+to working precision, we get a very nice demonstration
+of the inexactness of floating point representation:
+
+![Double-pendulum](/images/double_pendulum_vertical.gif)
 
 For the modeling, we simply write down the kinematic equations
 and balance forces. To avoid some of the hairy algebra,
