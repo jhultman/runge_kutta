@@ -119,26 +119,26 @@ class RungeKuttaSimulator:
 class Animator:
     '''Maintains state for FuncAnimation'''
     
-    def __init__(self, state, title, incr):
+    def __init__(self, state, fname, incr):
         self.state = state
+        self.fname = fname
         self.incr = incr
-        self.title = title
-        self.fig, self.ax = plt.subplots()
+        self.fig, self.ax = plt.subplots(figsize=(6, 6))
+        self.fig.tight_layout()
 
     def _get_savepath(self):
-        fname = self.title.lower().replace(' ', '_')
+        fname = self.fname.lower().replace(' ', '_')
         savepath = f'../images/{fname}.gif'
         return savepath
 
     def _get_limits(self):
         min_vals = [-2, -2]
         max_vals = [2, 2]
-        limits = np.vstack((min_vals, max_vals))
+        limits = 1.05 * np.vstack((min_vals, max_vals))
         return limits.T
 
     def _configure_axes(self):
         limits = self._get_limits()
-        self.ax.set_title(self.title)
         self.ax.set_xlim(limits[0, :])
         self.ax.set_ylim(limits[1, :])
         self.ax.set_aspect('equal')
@@ -161,7 +161,7 @@ class Animator:
     
     def animate(self):
         num_points = len(self.state)
-        frames = tqdm.trange(num_points // self.incr)
+        frames = num_points // self.incr
         savepath = self._get_savepath()
 
         print('Animating...')
@@ -169,7 +169,7 @@ class Animator:
             fig=self.fig, 
             func=self._step, 
             init_func=self._init_ani,
-            frames=frames,
+            frames=tqdm.trange(frames),
             interval=50, 
             repeat=False, 
             blit=True,
@@ -179,15 +179,17 @@ class Animator:
         
 
 def main():
-    q0 = np.deg2rad(180.0)
-    r0 = np.deg2rad(180.0)
+    q0 = np.deg2rad(160)
+    r0 = np.deg2rad(200)
+    u0 = +0.0 # rad/sec
+    v0 = +0.0 # rad/sec
 
     pendulum = DoublePendulum()
-    simulator = RungeKuttaSimulator(pendulum, q0=q0, r0=r0, T=25)
+    simulator = RungeKuttaSimulator(pendulum, q0=q0, r0=r0, u0=u0, v0=v0, T=25)
     history = simulator.simulate()
 
-    title = 'Double Pendulum'
-    animator = Animator(history, title, incr=1)
+    fname = 'Double Pendulum'
+    animator = Animator(history, fname, incr=1)
     animator.animate()
 
 
