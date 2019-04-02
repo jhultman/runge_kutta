@@ -6,7 +6,7 @@ and use it to demonstrate chaotic motion in the plane:
 
 ![Double-pendulum](/images/double_pendulum.gif)
 
-Edit: If we choose the initial angles to be vertical
+If we choose the initial angles to be vertical
 to working precision, we get a very nice demonstration
 of the inexactness of floating point representation.
 
